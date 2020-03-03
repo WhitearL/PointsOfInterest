@@ -1,0 +1,103 @@
+/*
+	Colors Used:
+		#D6F5EE - Background Light Mint Green
+		#C6F1E7 - Content Pane Darker Mint Green
+		#495A61 - Text Grey
+*/
+
+/*Apply colors and font as base style.*/
+html {
+	/*Keep font and colour consistent*/
+	font-family: Trebuchet MS;
+	color: #495A61;
+	background-color: #D6F5EE;
+}
+
+/*Standard title text font size*/
+h1 { font-size: 36px; }
+
+/*Standard text font size*/
+p, a { font-size: 24px; }
+
+/*Bar at the top for logo.*/
+div.topbar {
+	/*Take up all the horizontal space*/
+	width: 100%;
+	margin: 0;
+	padding: 0;
+
+	/*Invisible border*/
+	border-color: #C6F1E7;
+	border: 1px;
+
+	/*Stick to top*/
+	top: auto;
+}
+
+/*Div for centering an element in the page.*/
+div.center {
+	/*Dimensions*/
+	width: 400px;
+	height: 200px;
+
+	/*Mint green*/
+	background-color: #C6F1E7;
+
+	/*Align the text*/
+	text-align: center;
+
+	/*Position the div in the center*/
+	position:absolute;
+	left:0; right:0;
+	top:0; bottom:0;
+
+	/*Automatically center*/
+	margin: auto;
+
+	/*The content should not be truncated when the window is smaller*/
+	max-width: 100%;
+	max-height: 100%;
+	overflow: auto;
+}
+
+/*Border for div elements*/
+div.bordered {
+	border-radius: 5px;
+	border-width: 2px;
+	border-color: #C6F1E7;
+	background-color: #C6F1E7;
+	border-style: solid;
+}
+
+/*Center the logon form horizontally and vertically*/
+table.logonform {
+	margin: auto;
+	padding-bottom: 10px;
+}
+
+/*Make rounded borders for input fields*/
+input {
+	border-radius: 2px;
+	border-width: 0px;
+	height: 20px;
+}
+
+/*Standard link styling*/
+a {
+	color: blue;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+/*Links, when hovered over, will go bold and underlined*/
+a:hover {
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+/*Constant size for topbar logo*/
+img.topbarlogo {
+	/*Maintain aspect ratio of the image*/
+	height: 77.5;
+	width: 146.5;
+}
