@@ -36,9 +36,7 @@ div.topbar {
 
 /*Div for centering an element in the page.*/
 div.center {
-	/*Dimensions*/
-	width: 400px;
-	height: 200px;
+
 
 	/*Mint green*/
 	background-color: #C6F1E7;
@@ -46,18 +44,22 @@ div.center {
 	/*Align the text*/
 	text-align: center;
 
-	/*Position the div in the center*/
-	position:absolute;
-	left:0; right:0;
-	top:0; bottom:0;
+	/*More padding on the horizontal sides.*/
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-right: 60px;
+	padding-left: 60px;
+	
+	/*Center properties using absolute positioning*/
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	
+	/*Center using transforms. This isn't supported from IE8 back.*/
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
 
-	/*Automatically center*/
-	margin: auto;
-
-	/*The content should not be truncated when the window is smaller*/
-	max-width: 100%;
-	max-height: 100%;
-	overflow: auto;
 }
 
 /*Border for div elements*/
@@ -100,4 +102,9 @@ img.topbarlogo {
 	/*Maintain aspect ratio of the image*/
 	height: 77.5;
 	width: 146.5;
+}
+
+p.errormessage {
+	color: red;
+	font-size: 12px; 
 }

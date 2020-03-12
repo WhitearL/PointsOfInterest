@@ -1,0 +1,3 @@
+Next step is to create a connection to the DB such that we can authenticate the credentials once they're confirmed as valid.
+The regexes work.
+The AJAX setup on the front page is good.
