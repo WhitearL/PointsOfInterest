@@ -102,9 +102,48 @@ img.topbarlogo {
 	/*Maintain aspect ratio of the image*/
 	height: 77.5;
 	width: 146.5;
+	padding: 5px 5px 5px 5px;
 }
 
+/*Error message AJAX response font style*/
 p.errormessage {
 	color: red;
 	font-size: 12px; 
+}
+
+/*Sidebar container, takes up right 30% space*/
+.sidebarContainer {
+	width: 30%;
+	float: left;
+}
+
+/*Inner content styling for sidebar*/
+.sidebarInner {
+	padding: 5px 5px 5px 5px;
+	margin-right: 10px;
+	border: #495A61 1px solid;
+	min-height: 60px;
+}
+
+/*Content container, takes up left 70% space*/
+.contentPaneContainer {
+	width: 70%;
+	float: left;
+}
+
+/*Inner content styling for main content pane*/
+.contentPaneInner {
+	padding: 5px 5px 5px 5px;
+	border: #495A61 1px solid;
+	min-height: 60px;
+}
+
+/*Style to make other elements come below any floated content*/
+.clear-floated {
+	clear: both; 
+	height: 1px; 
+	font-size: 1px; 
+	line-height: 1px; 
+	padding: 0; 
+	margin: 0;
 }

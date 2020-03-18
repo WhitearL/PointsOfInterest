@@ -1,11 +1,13 @@
 <html>
+
 	<!--Front page. The user logs in from here.-->
 	
+	<!-- AJAX event handlers -->
 	<script type='text/javascript'>
 
 		// Constant strings representing success states that the logon handler uses in its responses
 		const correctCredentials = "CORRECT_CREDENTIALS";
-		const wrongCredentials = "WRONG_CREDENTIALS";
+		const wrongCredentials   = "WRONG_CREDENTIALS";
 		const invalidCredentials = "BAD_CREDENTIAL_FORMAT";
 
 		// Submit credentials to logonhandler.php for checking in the DB. Event handler for submit button click.
@@ -14,21 +16,26 @@
 			// XML HTTP request object.
 			var httpRequest = new XMLHttpRequest();
 
-			// Read in data.
+			// Read in data from form.
 			var inputUsername = document.getElementById("username").value;
 			var inputPassword = document.getElementById("password").value;
 
 			// Specify the callback function.
-			httpRequest.addEventListener ("load", handleResponse);
+			httpRequest.addEventListener("load", handleResponse);
 
 			/* 
 				Open the connection to the logon handler.
-				Use GET, this script queries the database.
+				Use POST to hide logon details
 			*/
-			httpRequest.open('GET', 'script/logonhandler.php?username=' + inputUsername + '&password=' + inputPassword);
+			httpRequest.open('POST', 'script/logonhandler.php');
+
+			// Append data to form object, and send using the HTTP Request.
+			let formData = new FormData();
+			formData.append("username", inputUsername);
+			formData.append("password", inputPassword);
 
 			// Send the request.
-			httpRequest.send();
+			httpRequest.send(formData);
 		}
 
 		// Callback function for logon requests.
@@ -36,17 +43,17 @@
 			// Save the logon handler's response.
 			var responseText = responseData.target.responseText;
 			
+			// Message to display under logon form in case of error.
 			var displayMessage = "";
 			
 			// Switch on the response message using the constants defined above.
 			switch(responseText) { 
 			
-				case "VALID_CREDENTIAL_FORMAT":
-					displayMessage = "yes";
-					break;
-				case correctCredentials: 
-					break;   
-					
+				case correctCredentials:
+					// Credentials are valid and the gatekeeper variable is set, move to the splash page
+					window.location.replace("pointsofinterest/splash.php")
+					break;  
+			
 				case wrongCredentials: 
 					displayMessage = "Incorrect credentials.";
 					break;
@@ -55,12 +62,15 @@
 					displayMessage = "Invalid credential format. Are you an evil cracker?";
 					break;
 					
-				default: 
+				default:
+					displayMessage = responseText;
 					break;   
 					
 			}
 			
-			document.getElementById('errormessage').innerHTML = displayMessage;   
+			// Set the response message underneath the logon form
+			document.getElementById('errormessage').innerHTML = displayMessage;
+			
 		}
 
 	</script>
@@ -74,7 +84,7 @@
 
 		<!--Centered login form-->
 		<div id="center" class="center bordered">
-			<!--Top bar for logo-->
+			<!--Top bar for logo in center form-->
 			<div class="topbar">
 				<img class="topbarlogo" src="img/poi_logo.png"/>
 			</div>
@@ -95,6 +105,8 @@
 			
 			<!-- Call AJAX event handler for button click-->
 			<input type="submit" value="Log in" onclick="submitCredentials()" />
+			
+			<!-- Display errors here -->
 			<p id="errormessage" class="errorMessage"></p>
 		</div>
 	</body>

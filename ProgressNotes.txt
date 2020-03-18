@@ -1,3 +1,4 @@
-Next step is to create a connection to the DB such that we can authenticate the credentials once they're confirmed as valid.
-The regexes work.
-The AJAX setup on the front page is good.
+Login works, splash page set up.
+
+Figure out how to use slim to get routes from somewhere other than index.php--namely splash.php.
+Set up routes for adding and reviewing as per assignment brief.
