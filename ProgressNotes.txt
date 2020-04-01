@@ -1,4 +1,3 @@
-Login works, splash page set up.
-
-Figure out how to use slim to get routes from somewhere other than index.php--namely splash.php.
-Set up routes for adding and reviewing as per assignment brief.
+Add poi form working, using an external dom handler.
+We need to set up form sending using the button though. Figure out how to assemble a post request form using javascript.
+Add the poi to the database using this method.

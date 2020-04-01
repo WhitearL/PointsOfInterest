@@ -37,7 +37,6 @@ div.topbar {
 /*Div for centering an element in the page.*/
 div.center {
 
-
 	/*Mint green*/
 	background-color: #C6F1E7;
 
@@ -49,17 +48,35 @@ div.center {
 	padding-top: 10px;
 	padding-right: 60px;
 	padding-left: 60px;
-	
+
 	/*Center properties using absolute positioning*/
 	margin: 0;
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	
+
 	/*Center using transforms. This isn't supported from IE8 back.*/
 	-ms-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 
+}
+
+div.dynamicform {
+	/*Mint green*/
+	background-color: #C6F1E7;
+
+	/*Center properties using absolute positioning*/
+	margin: 0;
+	position: absolute;
+
+	/*More padding on the horizontal sides.*/
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-right: 30px;
+	padding-left: 30px;
+
+	/*Align the text*/
+	text-align: center;
 }
 
 /*Border for div elements*/
@@ -108,31 +125,34 @@ img.topbarlogo {
 /*Error message AJAX response font style*/
 p.errormessage {
 	color: red;
-	font-size: 12px; 
+	font-size: 12px;
 }
 
 /*Sidebar container, takes up right 30% space*/
 .sidebarContainer {
+	height: 100%;
 	width: 30%;
 	float: left;
 }
 
 /*Inner content styling for sidebar*/
 .sidebarInner {
+	height: 100%;
 	padding: 5px 5px 5px 5px;
-	margin-right: 10px;
 	border: #495A61 1px solid;
 	min-height: 60px;
 }
 
 /*Content container, takes up left 70% space*/
 .contentPaneContainer {
+	height: 100%;
 	width: 70%;
 	float: left;
 }
 
 /*Inner content styling for main content pane*/
 .contentPaneInner {
+	height: 100%;
 	padding: 5px 5px 5px 5px;
 	border: #495A61 1px solid;
 	min-height: 60px;
@@ -140,10 +160,33 @@ p.errormessage {
 
 /*Style to make other elements come below any floated content*/
 .clear-floated {
-	clear: both; 
-	height: 1px; 
-	font-size: 1px; 
-	line-height: 1px; 
-	padding: 0; 
+	clear: both;
+	height: 1px;
+	font-size: 1px;
+	line-height: 1px;
+	padding: 0;
 	margin: 0;
+}
+
+/*Button standard styling*/
+.button {
+	transition: all 0.25s;
+	width: 100%;
+	background-color: #32CDA9;
+	border-radius: 5px;
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	font-size: 16px;
+	margin: 4px 2px;
+}
+
+/*Change colour on button hover*/
+.button:hover {
+	background-color: #239076;
+}
+
+.button:active {
+	background-color: #0f3E33;
 }

@@ -51,9 +51,10 @@
 			
 				case correctCredentials:
 					// Credentials are valid and the gatekeeper variable is set, move to the splash page
-					window.location.replace("pointsofinterest/splash.php")
+					window.location.replace("pointsofinterest/splashpage")
 					break;  
-			
+				
+				// Error states. Show an error message underneath the login button
 				case wrongCredentials: 
 					displayMessage = "Incorrect credentials.";
 					break;
@@ -62,6 +63,7 @@
 					displayMessage = "Invalid credential format. Are you an evil cracker?";
 					break;
 					
+				// If the code isn't recognised, just display the whole message. Used for debug.
 				default:
 					displayMessage = responseText;
 					break;   
