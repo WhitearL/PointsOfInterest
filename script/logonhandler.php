@@ -2,7 +2,7 @@
 
 	// Start session for logon handling
 	session_start();
-	
+
 	// Include the user DAO for logon checks.
 	include("../class/DAO/UserDAO.php");
 
@@ -31,49 +31,49 @@
 	*/
 	if (preg_match(USERNAME_REGEX, $inputUsername) && preg_match(PASSWORD_REGEX, $inputPassword)) {
 		/*Credentials are valid, check the database*/
-		
+
 		try {
 			// Connect to the database
 			$dbConnection = new PDO("mysql:host=localhost;dbname=assign236;", "username", "password");
-			
+
 			// Set up exception handling
 			$dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			
+
 			// Create a new DAO to access the database.
 			$userDAO = new UserDAO($dbConnection);
-			
+
 			// Call the checkCredentials method in the DAO to check the user credentials.
 			if ($userDAO->checkCredentials($inputUsername, $inputPassword)) {
-			
+
 				// Correct credentials
 				echo CORRECT_CREDENTIALS;
-				
-				// Set gatekeeper session var.
+
+				// Set gatekeeper session var and CSRF token.
 				$_SESSION["gatekeeper"] = $inputUsername;
-			
+
 			} else {
-				
+
 				// Credentials are of a valid format, but they are wrong.
 				echo WRONG_CREDENTIALS;
-				
+
 				// Destroy session if login invalid
 				session_destroy();
-				
+
 			}
 		} catch (PDOException $e) {
 			// General error reporting
 			echo $e;
-			
+
 			// Destroy session if login invalid
 			session_destroy();
 		}
-		
+
 	} else {
 		/*Credentials are invalid, send an error message back*/
 		echo BAD_CREDENTIAL_FORMAT;
-		
+
 		// Destroy session if login invalid
 		session_destroy();
 	}
-	
+
 ?>

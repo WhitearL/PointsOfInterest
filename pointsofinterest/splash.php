@@ -40,7 +40,7 @@
 				<link rel="stylesheet" type="text/css" href="../style/style.css"/>
 
 				<!-- Import form creation scripts -->
-				<script src="script/addpoiform.js" type="text/javascript"></script>
+				<script src="../class/java/AddPOIFormHandler.js" type="text/javascript"></script>
 			</head>
 
 			<script type='text/javascript'>
@@ -51,59 +51,114 @@
 				const removePOIs = "REMOVE_POI";
 				const searchPOIs = "SEARCH";
 				const logout = "LOG_OUT";
+				const invalidUser = "INVALID_USER";
 
-				function adminControl() {
+				/*
+					Generate a CSRF token, then run the given sensitive operation using the opCode.
+					The opCode indicates the operation to be run that needs a CSRF token.
+				*/
+				function runSensitiveOperation(opCode) {
+
+					// XML HTTP request object.
+					var httpRequest = new XMLHttpRequest();
+
+					// Specify the callback function.
+					httpRequest.addEventListener("load", CSRFResponse);
+
+					httpRequest.open('POST', 'script/CSRF.php');
+
+					// Append data to form object, and send using the HTTP Request.
+			          let formData = new FormData();
+					formData.append("opCode", opCode);
+
+					// Send the request.
+					httpRequest.send(formData);
+
+				}
+
+				/*
+					Take the response from the CSRF generator and run the given operation.
+					responseData is a csv line consisting of: Opcode, CSRFToken.
+				*/
+				function CSRFResponse(responseData) {
+					// Take the CSV response line and split on the comma.
+					var responseLine = responseData.target.responseText;
+
+					// CSRF.php returns "INVALID_USER" if the gatekeeper var isnt set.
+					if (responseLine != invalidUser) {
+						var responseArr = responseLine.split(",");
+
+						// Opcode is the first element, CSRF token is the second.
+						var opCode = responseArr[0];
+						var CSRFToken = responseArr[1];
+
+						// Call appropriate function based on opcode.
+						switch (opCode) {
+							case adminControls:
+								adminControl(CSRFToken);
+								break;
+							case addPOIs:
+								add(CSRFToken);
+								break;
+							case removePOIs:
+								remove(CSRFToken);
+								break;
+							case searchPOIs:
+								search(CSRFToken);
+								break;
+						}
+					} else {
+						// Redirect to gatekeeper error page if session is found to be invalid.
+						window.location.replace("../error_pages/gatekeeper.php")
+					}
+				}
+
+				function adminControl(CSRFToken) {
 					document.getElementById('test').innerHTML = "admincontrol";
 				}
 
-				function add() {
-					var x = document.getElementById("contentPaneInner");
+				// Form to add a POI.
+				function add(CSRFToken) {
+					if (CSRFToken != null) {
+						var contentPane = document.getElementById("contentPaneInner");
 
-				     // Clear content pane by setting the content to empty text
-				     x.textContent = '';
+					     // Clear content pane by setting the content to empty text
+					     contentPane.textContent = '';
 
+						// Generate a CSRF token and create a new add POI form.
+						var POIFormHandler = new AddPOIFormHandler(CSRFToken);
 
-
-					x.appendChild(createAddPOIForm());
+						contentPane.appendChild(POIFormHandler.createForm());
+					}
 				}
 
-				function remove() {
+				// Form to remove a POI.
+				function remove(CSRFToken) {
 					document.getElementById('test').innerHTML = "remove";
 				}
 
-				function search() {
+				// Form to search POIs
+				function search(CSRFToken) {
 					document.getElementById('test').innerHTML = "search";
 				}
 
+				// Logout back to the login screen.
 				function exit() {
 					document.getElementById('test').innerHTML = "logout";
 				}
 
 				// Handle click events, using the parameter value to decide on action to take.
-				function sidebarHandler(value) {
+				function sidebarHandler(opCode) {
 					// Remove all elements under the content pane div
 					document.getElementById("contentPaneInner").textContent = '';
 
-					switch(value) {
-						case adminControls:
-							adminControl();
-							break;
-						case addPOIs:
-							add();
-							break;
-						case removePOIs:
-							remove();
-							break;
-						case searchPOIs:
-							search();
-							break;
-						case logout:
-							exit();
-							break;
+					// All operations except logging out are sensitive.
+					if (opCode != logout) {
+						runSensitiveOperation(opCode);
+					} else {
+						exit();
 					}
 				}
-
-
 
 			</script>
 

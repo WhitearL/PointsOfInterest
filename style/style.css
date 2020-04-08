@@ -128,6 +128,12 @@ p.errormessage {
 	font-size: 12px;
 }
 
+/*Message styling indicating operation success*/
+p.successmessage {
+	color: green;
+	font-size: 12px;
+}
+
 /*Sidebar container, takes up right 30% space*/
 .sidebarContainer {
 	height: 100%;
