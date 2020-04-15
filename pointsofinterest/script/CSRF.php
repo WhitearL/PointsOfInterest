@@ -6,7 +6,7 @@
      session_start();
 
      // Opcode to send back, indicating the operation that needs a CSRF token to run
-     $opCode = $_POST['opCode'];
+     $opCode = htmlentities($_POST['opCode']);
 
      // Check the gatekeeper session variable. If it isnt present, the CSRF isnt generated and the operations cannot run.
      if (isset($_SESSION["gatekeeper"])) {

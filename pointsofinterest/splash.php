@@ -47,11 +47,13 @@
 
 				// Status code constants
 				const adminControls = "ADMIN_CONTROL";
-				const addPOIs = "ADD_POI";
-				const removePOIs = "REMOVE_POI";
-				const searchPOIs = "SEARCH";
-				const logout = "LOG_OUT";
-				const invalidUser = "INVALID_USER";
+				const addPOIs       = "ADD_POI";
+				const removePOIs    = "REMOVE_POI";
+				const searchPOIs    = "SEARCH";
+				const logout        = "LOG_OUT";
+				const invalidUser   = "INVALID_USER";
+
+				// --- Event handlers / CSRF methods ---
 
 				/*
 					Generate a CSRF token, then run the given sensitive operation using the opCode.
@@ -113,6 +115,25 @@
 					}
 				}
 
+				/*
+					Handle click events, using the parameter value to decide on action to take
+					opCode is passed in from the button onclick events.
+				*/
+				function sidebarHandler(opCode) {
+					// Remove all elements under the content pane div
+					document.getElementById("contentPaneInner").textContent = '';
+
+					// All operations except logging out are sensitive.
+					if (opCode != logout) {
+						runSensitiveOperation(opCode);
+					} else {
+						exit();
+					}
+				}
+
+
+				// --- Operation-specific methods ---
+
 				function adminControl(CSRFToken) {
 					document.getElementById('test').innerHTML = "admincontrol";
 				}
@@ -125,10 +146,17 @@
 					     // Clear content pane by setting the content to empty text
 					     contentPane.textContent = '';
 
-						// Generate a CSRF token and create a new add POI form.
+						// Generate a CSRF token and create a new add POI form using that token.
 						var POIFormHandler = new AddPOIFormHandler(CSRFToken);
 
-						contentPane.appendChild(POIFormHandler.createForm());
+						// Create and return a form from the form handler
+						var addPOIForm = POIFormHandler.createForm();
+
+						// Append form to content pane
+						contentPane.appendChild(addPOIForm);
+
+						// Set event handler once form is appended -- Call the submit data function in the form handler.
+						document.getElementById("poiSubmit").addEventListener("click", function() { POIFormHandler.submitData(POIFormHandler.CSRF); });
 					}
 				}
 
@@ -147,19 +175,6 @@
 					document.getElementById('test').innerHTML = "logout";
 				}
 
-				// Handle click events, using the parameter value to decide on action to take.
-				function sidebarHandler(opCode) {
-					// Remove all elements under the content pane div
-					document.getElementById("contentPaneInner").textContent = '';
-
-					// All operations except logging out are sensitive.
-					if (opCode != logout) {
-						runSensitiveOperation(opCode);
-					} else {
-						exit();
-					}
-				}
-
 			</script>
 
 			<body>
@@ -175,7 +190,7 @@
 
 						<p id="test"></p>
 
-						<!-- Sidebar buttons -->
+						<!-- Sidebar buttons, link to event handler with different params on click -->
 						<button class="button" type="button" onClick="sidebarHandler('ADMIN_CONTROL')">Admin Controls</button>
 						<button class="button" type="button" onClick="sidebarHandler('ADD_POI')">Add POIs</button>
 						<button class="button" type="button" onClick="sidebarHandler('REMOVE_POI')">Remove POIs</button>
@@ -190,6 +205,7 @@
 					<!-- Content pane inner -->
 					<div id="contentPaneInner" class="contentPaneInner">
 
+						<!-- Dynamically populated using JavaScript -->
 
 					</div>
 				</div>
@@ -200,7 +216,8 @@
 		<?php
 	} else {
 		?>
-		// Redirect to the gatekeeper page if session is invalid.
+
+		<!-- Redirect to the gatekeeper page if session is invalid. -->
 		<script> window.location.replace("../error_pages/gatekeeper.php") </script>
 
 		<?php

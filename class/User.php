@@ -14,7 +14,7 @@
          function __construct($username, $password)
          {
              // Initlialise attributes
-             $this->username = $nameIn;
+             $this->username = $username;
              $this->password = $password;
          }
 

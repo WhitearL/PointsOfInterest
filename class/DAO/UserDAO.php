@@ -28,28 +28,29 @@
 	   */
 		public function checkCredentials($inputUsername, $inputPassword) {
 			// Prepare check statement with given user and password.
-			$sql = "SELECT id, username, password FROM poi_users WHERE username = :username AND password = :password";     
-        
-			if($statement = $this->dbConnection->prepare($sql)){
+			$sql = "SELECT id, username, password FROM poi_users WHERE username = :username AND password = :password";
+
+	   		// If statement was successfully prepared, then bind its params.
+			if ($statement = $this->dbConnection->prepare($sql)){
 				// Bind variables to the prepared statement as parameters
 				$statement->bindParam(":username", $userParam, PDO::PARAM_STR);
 				$statement->bindParam(":password", $passParam, PDO::PARAM_STR);
-				
+
 				// Trim and set parameters for the prepared statement
 				$userParam = trim($inputUsername);
 				$passParam = trim($inputPassword);
 
 				// Execute query, with username and password as placeholders.
 				if ($statement->execute()) {
-				
+
 					// Check the number of matches.
 					if ($statement->rowCount() == 1) {
 						// One match, credentials are correct.
 						return True;
-					} 
-				
+					}
+
 				}
-				
+
 				// 0 or multiple matches, deny access.
 				return False;
 			}

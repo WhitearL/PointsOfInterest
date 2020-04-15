@@ -6,11 +6,11 @@ class AddPOIFormHandler {
      // Public constructor, allow instantiation
      constructor(CSRFToken) {
           // CSRF token generated from php just before the class was instantiated.
-          CSRF = CSRFToken;
+          this.CSRF = CSRFToken;
      }
 
      // Event handler for submit poi button.
-     submitData() {
+     submitData(CSRF) {
 
           // XML HTTP request object.
           var httpRequest = new XMLHttpRequest();
@@ -39,7 +39,7 @@ class AddPOIFormHandler {
           formData.append("POIDesc",    document.getElementById("poiDescription").value);
 
           // Append CSRF token from php.
-          formData.append("CSRF", CSRF);
+          formData.append("CSRF", this.CSRF);
 
           // Send the request.
           httpRequest.send(formData);
@@ -125,6 +125,7 @@ class AddPOIFormHandler {
 
           // Submit button
           this.submitElement = document.createElement('button');
+          this.submitElement.id = "poiSubmit";
           this.submitElement.innerHTML = "Submit POI";
           // Button styling and type
           this.submitElement.setAttribute("class", "button");
@@ -133,9 +134,6 @@ class AddPOIFormHandler {
           // Output message box under button
           this.responseOutput = document.createElement('p');
           this.responseOutput.id = "responseOutput";
-
-          // Event handler for button click
-          this.submitElement.addEventListener("click", this.submitData);
 
           // Append table to container.
           container.appendChild(this.createFormTable());

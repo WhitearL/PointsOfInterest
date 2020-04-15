@@ -4,7 +4,7 @@
 	session_start();
 
 	// Include the user DAO for logon checks.
-	include("../class/DAO/UserDAO.php");
+	require_once("../class/DAO/UserDAO.php");
 
 	/*
 	  This script will validate and check the entered details from the login form
@@ -48,7 +48,7 @@
 				// Correct credentials
 				echo CORRECT_CREDENTIALS;
 
-				// Set gatekeeper session var and CSRF token.
+				// Set gatekeeper session var to the username so we can access it elsewhere.
 				$_SESSION["gatekeeper"] = $inputUsername;
 
 			} else {
