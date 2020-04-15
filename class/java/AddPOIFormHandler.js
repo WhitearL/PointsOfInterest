@@ -12,12 +12,32 @@ class AddPOIFormHandler {
      // Event handler for submit poi button.
      submitData(CSRF) {
 
+          // Regex for floating point coords.
+          var coordRegex = new RegExp("^[+-]?([0-9]*[.])?[0-9]+$");
+
           // XML HTTP request object.
           var httpRequest = new XMLHttpRequest();
 
-          // Callback function
+          // Callback function, interpret response from AddPOI.php.
           var responseCallback = function handlePOIResponse(responseData) {
-               document.getElementById("responseOutput").innerHTML = responseData.target.responseText;
+               var responseStr = responseData.target.responseText;
+
+               // Get response element and set the style to the error message style.
+               var responseBox = document.getElementById("responseOutput");
+               responseBox.className = 'errormessage';
+
+               // Interpret response.
+               if (responseStr == "SUCCESS") {
+                    // If it was successful then change the styling to the success message style.
+                    responseBox.className = 'successmessage';
+                    responseBox.innerHTML = "POI added successfully.";
+               } else if (responseStr == "FAILURE") {
+                    // Failure when adding to database.
+                    responseBox.innerHTML = "POI could not be added, check for duplicate entries";
+               } else {
+                    // Unknown state: most likely an error that hasnt been accounted for.
+                    responseBox.innerHTML = "An error occurred: " + responseStr;
+               }
           };
 
           // Specify the callback function.
@@ -29,20 +49,37 @@ class AddPOIFormHandler {
           // Open the request using POST.
           httpRequest.open('POST', '../../pointsofinterest/script/AddPOI.php');
 
+          var latitude = document.getElementById("poiLat").value;
+          var longitude = document.getElementById("poiLong").value;
+
           // Get values from DOM elements.
           formData.append("POIName",    document.getElementById("poiName").value);
           formData.append("POIType",    document.getElementById("poiType").value);
           formData.append("POICountry", document.getElementById("poiCountry").value);
           formData.append("POIRegion",  document.getElementById("poiRegion").value);
-          formData.append("POILat",     document.getElementById("poiLat").value);
-          formData.append("POILong",    document.getElementById("poiLong").value);
-          formData.append("POIDesc",    document.getElementById("poiDescription").value);
 
-          // Append CSRF token from php.
-          formData.append("CSRF", this.CSRF);
+          if (coordRegex.test(latitude) && coordRegex.test(longitude)) {
 
-          // Send the request.
-          httpRequest.send(formData);
+               // Append coords
+               formData.append("POILat",     latitude);
+               formData.append("POILong",     longitude);
+
+               // Append description
+               formData.append("POIDesc",    document.getElementById("poiDescription").value);
+
+               // Append CSRF token from php.
+               formData.append("CSRF", this.CSRF);
+
+               // Send the request.
+               httpRequest.send(formData);
+
+          } else {
+               // Invalid coords.
+               var responseBox = document.getElementById("responseOutput");
+               responseBox.className = 'errormessage';
+               responseBox.innerHTML = "You have given invalid coordinate params.";
+          }
+
      }
 
      // Create the form UI to display on screen

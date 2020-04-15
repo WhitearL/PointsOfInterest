@@ -29,14 +29,13 @@
 			if ($statement = $this->dbConnection->prepare($sql)) {
 
 				// PDOStatement->bindParam() only allows variables to be passed in by reference, so declare before binding.
-				$table           = TABLE_NAME;
- 				$name            = trim($poi->getName());
-				$type            = trim($poi->getType());
-				$country         = trim($poi->getCountry());
-				$region          = trim($poi->getRegion());
-				$longitude       = trim($poi->getLongitude());
-				$latitude        = trim($poi->getLatitude());
-				$description     = trim($poi->getDescription());
+ 				$name        = trim($poi->getName());
+				$type        = trim($poi->getType());
+				$country     = trim($poi->getCountry());
+				$region      = trim($poi->getRegion());
+				$longitude   = trim($poi->getLongitude());
+				$latitude    = trim($poi->getLatitude());
+				$description = trim($poi->getDescription());
 
 				// Set recommendations to 0 by default
 				$recommendations = 0;

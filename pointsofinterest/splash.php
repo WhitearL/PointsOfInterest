@@ -1,5 +1,6 @@
 <?php
 
+	// Include slim dependencies from server autoload
 	require('C:\xampp\php\vendor\autoload.php');
 	use Psr\Http\Message\ResponseInterface as Response;
 	use Psr\Http\Message\ServerRequestInterface as Request;
