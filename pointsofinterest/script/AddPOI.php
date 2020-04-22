@@ -10,7 +10,7 @@
      // Start the session so we can access session vars.
      session_start();
 
-     // Define poi table name as a constant.
+     // Define operation result constants.
      define("OP_SUCCESS", "SUCCESS");
      define("OP_FAILURE", "FAILURE");
 

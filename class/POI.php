@@ -7,6 +7,7 @@
      class POI
      {
          // Class instance fields.
+         private $ID; // Optional-- Cannot be set in constructor/ must use setter
          private $name;
          private $type;
          private $country;
@@ -62,6 +63,10 @@
          // Getter/Setter for poi description
          function getDescription() { return $this->description; }
          function setDescription($newDescription) { $this->description = $newDescription; }
+
+         // Getter/Setter for poi ID
+         function getID() { return $this->ID; }
+         function setID($newID) { $this->ID = $newID; }
 
      };
 

@@ -41,7 +41,8 @@
 				<link rel="stylesheet" type="text/css" href="../style/style.css"/>
 
 				<!-- Import form creation scripts -->
-				<script src="../class/java/AddPOIFormHandler.js" type="text/javascript"></script>
+				<script src="../class/java/formhandlers/AddPOIFormHandler.js" type="text/javascript"></script>
+				<script src="../class/java/formhandlers/SearchPOIFormHandler.js" type="text/javascript"></script>
 			</head>
 
 			<script type='text/javascript'>
@@ -168,7 +169,24 @@
 
 				// Form to search POIs
 				function search(CSRFToken) {
-					document.getElementById('test').innerHTML = "search";
+					if (CSRFToken != null) {
+						var contentPane = document.getElementById("contentPaneInner");
+
+						// Clear content pane by setting the content to empty text
+						contentPane.textContent = '';
+
+						// Generate a CSRF token and create a new add POI form using that token.
+						var POISearchFormHandler = new SearchPOIFormHandler(CSRFToken);
+
+						// Create and return a form from the form handler
+						var searchPOIForm = POISearchFormHandler.createForm();
+
+						// Append form to content pane
+						contentPane.appendChild(searchPOIForm);
+
+						// Set event handler once form is appended -- Call the submit data function in the form handler.
+						document.getElementById("poiSearch").addEventListener("click", function() { POISearchFormHandler.submitData(POISearchFormHandler.CSRF); });
+					}
 				}
 
 				// Logout back to the login screen.
