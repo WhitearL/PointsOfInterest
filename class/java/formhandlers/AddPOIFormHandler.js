@@ -87,7 +87,7 @@ class AddPOIFormHandler {
 
           // Container div for the table and heading
           var container = document.createElement('div');
-          container.className = "dynamicform bordered";
+          container.className = "dynamicform bordered filled";
 
           // Form heading
           var heading = document.createElement('h2');

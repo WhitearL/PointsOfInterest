@@ -49,9 +49,8 @@
                          $poi->setID($row['ID']);
 
                          // Encode as JSON so JavaScript can interpret it, and write it on the response.
-                         echo poi_to_json($poi);
-
-                         echo "<br/>";
+                         // BREAK is used by javascript to split the json string.
+                         echo poi_to_json($poi) . "BREAK";
                     }
 
                } else {

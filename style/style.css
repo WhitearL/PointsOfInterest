@@ -16,6 +16,21 @@ html {
 /*Standard title text font size*/
 h1 { font-size: 36px; }
 
+h2, h3 {
+	text-align: left;
+	margin: 0;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+h2 { font-size: 18px; }
+h3 { font-size: 12px; }
+
+table.nospace {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
 /*Standard text font size*/
 p, a { font-size: 24px; }
 
@@ -32,6 +47,29 @@ div.topbar {
 
 	/*Stick to top*/
 	top: auto;
+}
+
+#searchResultsContainer, #searchFormContainer {
+	/*Mint green*/
+	background-color: #C6F1E7;
+
+	/*Center properties using absolute positioning*/
+	margin: 0;
+	position: relative;
+
+	border-width: 1px;
+	border-style: solid;
+	border-color: #D6F5EE;
+	border-radius: 5px;
+
+	/*More padding on the horizontal sides.*/
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-right: 30px;
+	padding-left: 30px;
+
+	/*Align the text*/
+	text-align: center;
 }
 
 /*Div for centering an element in the page.*/
@@ -51,7 +89,7 @@ div.center {
 
 	/*Center properties using absolute positioning*/
 	margin: 0;
-	position: absolute;
+	position: relative;
 	top: 50%;
 	left: 50%;
 
@@ -63,7 +101,7 @@ div.center {
 
 div.dynamicform {
 	/*Mint green*/
-	background-color: #C6F1E7;
+	background-color: #D6F5EE;
 
 	/*Center properties using absolute positioning*/
 	margin: 0;
@@ -81,11 +119,20 @@ div.dynamicform {
 
 /*Border for div elements*/
 div.bordered {
-	border-radius: 5px;
-	border-width: 2px;
-	border-color: #C6F1E7;
-	background-color: #C6F1E7;
+	/*Mint green*/
+	background-color: #D6F5EE;
+
+	border-width: 1px;
 	border-style: solid;
+	border-color: #D6F5EE;
+	border-radius: 5px;
+
+}
+
+div.filled {
+	/*Darker Mint green*/
+	background-color: #C6F1E7;
+	border-color: #C6F1E7;
 }
 
 /*Center the logon form horizontally and vertically*/

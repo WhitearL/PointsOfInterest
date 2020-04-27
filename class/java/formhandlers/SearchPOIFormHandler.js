@@ -61,9 +61,14 @@ class SearchPOIFormHandler {
 
      // Create the form UI to display on screen
      createForm() {
+
+          // Root. Holds container and the search results box
+          var rootpane = document.createElement('div')
+          rootpane.className = "dynamicform";
+
           // Container div for the table and heading
           var container = document.createElement('div');
-          container.className = "dynamicform bordered";
+          container.id = "searchFormContainer";
 
           // Form heading
           var heading = document.createElement('h2');
@@ -105,12 +110,16 @@ class SearchPOIFormHandler {
           this.searchResponseOutput = document.createElement('p');
           this.searchResponseOutput.id = "searchResponseOutput";
 
+          // Div to hold search results table. Underneath search response text area
+          this.searchResultsContainer = document.createElement('div');
+          this.searchResultsContainer.id = "searchResultsContainer";
+          this.searchResultsContainer.className = "dynamicform bordered filled";
+
           // Create form table and append
           container.appendChild(this.createFormTable());
 
           // Append a line break to container under the table.
-          var linebreak = document.createElement('br');
-          container.appendChild(linebreak);
+          container.appendChild(document.createElement('br'));
 
           // Append submit button
           container.appendChild(this.submitElement);
@@ -118,8 +127,12 @@ class SearchPOIFormHandler {
           // Append message box
           container.appendChild(this.searchResponseOutput);
 
+          // Append the form container, then a line break, then the search results box.
+          rootpane.appendChild(container);
+          rootpane.appendChild(this.searchResultsContainer);
+
           // Return the div to be displayed in html.
-          return container;
+          return rootpane;
      }
 
      // Create table of fields to align them properly
@@ -184,7 +197,95 @@ class SearchPOIFormHandler {
 
           // Callback function, interpret response from SearchPOI.php.
           var responseCallback = function handlePOIResponse(responseData) {
-               document.getElementById("searchResponseOutput").innerHTML = responseData.target.responseText;
+               //document.getElementById("searchResponseOutput").innerHTML = responseData.target.responseText;
+               var POIJSONArr = responseData.target.responseText.split("BREAK");
+
+               // Search results table root element
+               var rootTable = document.createElement('table');
+               // Table body element
+               var rootTableBody = document.createElement('tbody');
+
+                    // Parse POI JSON into dynamic object.
+                    for (let i = 0; i < 4; i++) {
+                         var POI = JSON.parse(POIJSONArr[i]);
+
+                         // Row to display all details of a POI. Inside is another table with the rows showing the details.
+                         var rootTableRow = document.createElement('tr');
+
+                         // Format of search result item (One per table row):
+                         //        <Name> : <Region>
+                         //        <Type> in <Country>
+                         //        Coords: <Lat>, <Lon>
+                         //        <Description>
+                         //        This has been recommended <Recs> times.
+                         //        <RECOMMEND BUTTON> <LEAVE REVIEW BUTTON> <VIEW REVIEWS BUTTON>
+
+                         var rowTable = document.createElement('table');
+                         rowTable.className = "nospace";
+                         rowTable.setAttribute('cellspacing', '0');
+                         var rowTableBody = document.createElement('tbody');
+
+                              // Name heading
+                              var trHeading = document.createElement("tr");
+                                   var thHeading = document.createElement("th");
+                                   var nameHeader = document.createElement("h2");
+                                   nameHeader.innerHTML = POI.name + ", " + POI.region;
+                                   thHeading.appendChild(nameHeader);
+                                   trHeading.appendChild(thHeading);
+                              rowTableBody.appendChild(trHeading);
+                              rowTableBody.appendChild(document.createElement('br')); // Break
+
+                              // Type Label
+                              var trType = document.createElement('tr');
+                                   var thType = document.createElement("th");
+                                   var pType = document.createElement("h3");
+                                   // Capitalise the type.
+                                   pType.innerHTML = (POI.type.charAt(0).toUpperCase() + POI.type.slice(1)) + " in " + POI.country;
+                                   thType.appendChild(pType);
+                                   trType.appendChild(thType);
+                              rowTableBody.appendChild(trType);
+                              rowTableBody.appendChild(document.createElement('br')); // Break
+
+                              // Coords Label
+                              var trCoords = document.createElement('tr');
+                                   var thCoords = document.createElement("th");
+                                   var pCoords = document.createElement("h3");
+                                   pCoords.innerHTML = "Coords: " + POI.latitude + ", " + POI.longitude;
+                                   thCoords.appendChild(pCoords);
+                                   trCoords.appendChild(thCoords);
+                              rowTableBody.appendChild(trCoords);
+                              rowTableBody.appendChild(document.createElement('br')); // Break
+
+                              // Description Label
+                              var trDesc = document.createElement('tr');
+                                   var thDesc = document.createElement('th');
+                                   var pDesc = document.createElement('h3');
+                                   pDesc.innerHTML = POI.description;
+                                   thDesc.appendChild(pDesc);
+                                   trDesc.appendChild(thDesc);
+                              rowTableBody.appendChild(trDesc);
+                              rowTableBody.appendChild(document.createElement('br')); // Break
+
+                              var trLinks = document.createElement('tr');
+                                   var thRecommend = document.createElement('th');
+                                   var aRecommend = document.createElement('a');
+
+                                   var thLeaveReview = document.createElement('th');
+                                   var aLeaveReview = document.createElement('a');
+
+                                   var thViewReviews = document.createElement('th');
+                                   var aViewReviews = document.createElement('a');
+                                   
+                         rowTable.appendChild(rowTableBody);
+                         rootTableRow.appendChild(rowTable);
+
+                         rootTableBody.appendChild(rootTableRow);
+                    }
+
+               rootTable.appendChild(rootTableBody);
+
+               searchResultsContainer.appendChild(rootTable);
+
           };
 
           // Specify the callback function and send the request.

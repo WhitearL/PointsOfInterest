@@ -1,1 +1,3 @@
-Search function is wokring, and kicks out JSON. We need to parse this on the javascript end to output this to the screen.
+Search function shows formatted results now.
+We need to finish adding links to the formatted results for reviews and recommends.
+Look at SearchPOIFormHandler.js line 270
