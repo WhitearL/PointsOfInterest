@@ -1,7 +1,7 @@
 <html>
 
 	<!--Front page. The user logs in from here.-->
-	
+
 	<!-- AJAX event handlers -->
 	<script type='text/javascript'>
 
@@ -23,7 +23,7 @@
 			// Specify the callback function.
 			httpRequest.addEventListener("load", handleResponse);
 
-			/* 
+			/*
 				Open the connection to the logon handler.
 				Use POST to hide logon details
 			*/
@@ -42,41 +42,41 @@
 		function handleResponse(responseData) {
 			// Save the logon handler's response.
 			var responseText = responseData.target.responseText;
-			
+
 			// Message to display under logon form in case of error.
 			var displayMessage = "";
-			
+
 			// Switch on the response message using the constants defined above.
-			switch(responseText) { 
-			
+			switch(responseText) {
+
 				case correctCredentials:
 					// Credentials are valid and the gatekeeper variable is set, move to the splash page
 					window.location.replace("pointsofinterest/splashpage")
-					break;  
-				
+					break;
+
 				// Error states. Show an error message underneath the login button
-				case wrongCredentials: 
+				case wrongCredentials:
 					displayMessage = "Incorrect credentials.";
 					break;
-					
+
 				case invalidCredentials:
 					displayMessage = "Invalid credential format. Are you an evil cracker?";
 					break;
-					
+
 				// If the code isn't recognised, just display the whole message. Used for debug.
 				default:
 					displayMessage = responseText;
-					break;   
-					
+					break;
+
 			}
-			
+
 			// Set the response message underneath the logon form
 			document.getElementById('errormessage').innerHTML = displayMessage;
-			
+
 		}
 
 	</script>
-	
+
 	<head>
 		<title>POI: Points of Interest</title>
 		<link rel="stylesheet" type="text/css" href="style/style.css"/>
@@ -85,14 +85,14 @@
 	<body>
 
 		<!--Centered login form-->
-		<div id="center" class="center bordered">
+		<div id="center" class="center bordered filled">
 			<!--Top bar for logo in center form-->
 			<div class="topbar">
 				<img class="topbarlogo" src="img/poi_logo.png"/>
 			</div>
-		
+
 			<h1>Points of Interest</h1>
-		
+
 			<!--Table to align form fields and labels-->
 			<table class="logonform">
 				<tr>
@@ -104,10 +104,10 @@
 					<th><input type="password" id="password"></th>
 				</tr>
 			</table>
-			
+
 			<!-- Call AJAX event handler for button click-->
 			<input type="submit" value="Log in" onclick="submitCredentials()" />
-			
+
 			<!-- Display errors here -->
 			<p id="errormessage" class="errorMessage"></p>
 		</div>

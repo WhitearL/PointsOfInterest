@@ -200,15 +200,15 @@ class AddPOIFormHandler {
           // Name Row
           var trPOIName = document.createElement('tr');
 
-            // Name label.
-            var tdLblPOIName = document.createElement('th');
-            tdLblPOIName.appendChild(this.nameLabel);
-            trPOIName.appendChild(tdLblPOIName);
+               // Name label.
+               var tdLblPOIName = document.createElement('th');
+               tdLblPOIName.appendChild(this.nameLabel);
+               trPOIName.appendChild(tdLblPOIName);
 
-            // Name input field.
-            var thInputPOIName = document.createElement('th');
-            thInputPOIName.appendChild(this.nameElement);
-            trPOIName.appendChild(thInputPOIName);
+               // Name input field.
+               var thInputPOIName = document.createElement('th');
+               thInputPOIName.appendChild(this.nameElement);
+               trPOIName.appendChild(thInputPOIName);
 
           tableBody.appendChild(trPOIName);
 

@@ -72,6 +72,10 @@ div.topbar {
 	text-align: center;
 }
 
+th {
+	text-align:left;
+}
+
 /*Div for centering an element in the page.*/
 div.center {
 
@@ -89,7 +93,7 @@ div.center {
 
 	/*Center properties using absolute positioning*/
 	margin: 0;
-	position: relative;
+	position: absolute;
 	top: 50%;
 	left: 50%;
 
@@ -153,6 +157,13 @@ a {
 	color: blue;
 	text-decoration: none;
 	font-weight: normal;
+}
+
+/*Search form link styling*/
+a.poiLink {
+	text-align: left;
+	font-size: 12px;
+	padding-right: 10px;
 }
 
 /*Links, when hovered over, will go bold and underlined*/

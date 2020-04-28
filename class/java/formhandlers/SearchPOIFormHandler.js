@@ -179,8 +179,28 @@ class SearchPOIFormHandler {
           return alignTable;
      }
 
+     // Open leave review form for a specific POI.
+     leaveReview(poiID) {
+          console.log(poiID);
+          console.log("leave review test");
+     }
+
+     viewReviews(poiID) {
+          console.log(poiID);
+          console.log("view review test" + poiID);
+     }
+
+     recommend(poiID) {
+          console.log(poiID);
+          console.log("recommend test" + poiID);
+     }
+
      // Event handler for search poi button. Get data and GET search results from Database using field and value.
      submitData(CSRF) {
+
+          // 'this' will change when the callback function is called.
+          // Aliasing the global context of 'this' allows us to access class methods from the callback.
+          var classContextThis = this;
 
           // XML HTTP request object.
           var httpRequest = new XMLHttpRequest();
@@ -229,10 +249,21 @@ class SearchPOIFormHandler {
                               var trHeading = document.createElement("tr");
                                    var thHeading = document.createElement("th");
                                    var nameHeader = document.createElement("h2");
-                                   nameHeader.innerHTML = POI.name + ", " + POI.region;
+                                   nameHeader.innerHTML = POI.name + ", " + POI.region + " (ID: " + POI.ID + ")";
                                    thHeading.appendChild(nameHeader);
                                    trHeading.appendChild(thHeading);
                               rowTableBody.appendChild(trHeading);
+                              rowTableBody.appendChild(document.createElement('br')); // Break
+
+                              // ID Label
+                              var trID = document.createElement("tr");
+                                   var thID = document.createElement("th");
+                                   var pID = document.createElement("h3");
+                                   pID.innerHTML = "ID: " + POI.ID;
+                                   pID.id = "poiID" + POI.ID;
+                                   thID.appendChild(pID);
+                                   trID.appendChild(thID);
+                              rowTableBody.appendChild(trID);
                               rowTableBody.appendChild(document.createElement('br')); // Break
 
                               // Type Label
@@ -266,16 +297,38 @@ class SearchPOIFormHandler {
                               rowTableBody.appendChild(trDesc);
                               rowTableBody.appendChild(document.createElement('br')); // Break
 
+                              // Links line
                               var trLinks = document.createElement('tr');
+                                   // Recommend link.
                                    var thRecommend = document.createElement('th');
                                    var aRecommend = document.createElement('a');
+                                   aRecommend.className = "poiLink";
+                                   aRecommend.innerHTML = "Recommend";
+                                   aRecommend.addEventListener("click", function() { classContextThis.recommend(pID.textContent.split(": ")[1]); } );
+                                   thRecommend.appendChild(aRecommend);
+                                   trLinks.appendChild(thRecommend);
 
+                                   // Leave review link
                                    var thLeaveReview = document.createElement('th');
                                    var aLeaveReview = document.createElement('a');
+                                   aLeaveReview.className = "poiLink";
+                                   aLeaveReview.innerHTML = "Leave Review";
+                                   aLeaveReview.addEventListener("click", function() { classContextThis.leaveReview(pID.textContent.split(": ")[1]); });
+                                   thRecommend.appendChild(aLeaveReview);
+                                   trLinks.appendChild(thLeaveReview);
 
+                                   // View reviews link
                                    var thViewReviews = document.createElement('th');
                                    var aViewReviews = document.createElement('a');
-                                   
+                                   aViewReviews.className = "poiLink";
+                                   aViewReviews.innerHTML = "View Reviews";
+                                   aViewReviews.addEventListener("click", function() { classContextThis.viewReviews(pID.textContent.split(": ")[1]); });
+                                   thRecommend.appendChild(aViewReviews);
+                                   trLinks.appendChild(thViewReviews);
+
+                              rowTableBody.appendChild(trLinks);
+                              rowTableBody.appendChild(document.createElement('br')); // Break
+
                          rowTable.appendChild(rowTableBody);
                          rootTableRow.appendChild(rowTable);
 
@@ -292,8 +345,5 @@ class SearchPOIFormHandler {
           httpRequest.addEventListener("load", responseCallback);
           httpRequest.send();
 
-          //document.getElementById("searchResponseOutput").innerHTML = '../../pointsofinterest/script/SearchPOIs.php' + queryString;
-
      }
-
 }

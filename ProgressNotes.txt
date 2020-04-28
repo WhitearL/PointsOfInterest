@@ -1,3 +1,5 @@
 Search function shows formatted results now.
 We need to finish adding links to the formatted results for reviews and recommends.
 Look at SearchPOIFormHandler.js line 270
+
+We need to create the pois such that they each have their own ID and can use that to call the relevant functions for reviews and recommends. Make a class which constructs a table like the one in the form handler, that holds an ID and keeps the methods for recomment and review. That way we can AJAX the write review bit on the table itself, and link to another page for the view reviews. Wait for nicks response on the reviews pages.
