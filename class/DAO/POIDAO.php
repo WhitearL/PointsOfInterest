@@ -192,7 +192,7 @@
 			// No scripting here
 			$revID = trim(htmlentities($reviewID));
 
-			// Use id to search db
+			// Use id to search db for records to delete.
 			$statement = $this->dbConnection->prepare("DELETE FROM poi_reviews WHERE id=?");
 			// Execute the statement and return it.
 			$statement->execute([$revID]);	
@@ -209,7 +209,25 @@
 
 		/**
 		 * Approve a review of a certain ID. Returns a success state boolean.
-		 * 
 		 */
+		public function approveReview($reviewID) {
+
+			// No scripting here
+			$revID = trim(htmlentities($reviewID));
+
+			// Use id to search db for records to approve.		
+			$statement = $this->dbConnection->prepare("UPDATE poi_reviews SET approved=1 WHERE ID=?");
+			// Execute the statement and return it.
+			$statement->execute([$revID]);	
+
+			if ($statement->rowCount() > 0) {
+				// One row was approved. Successful
+				return True;
+			}
+
+			// Nothing was approved. Unsuccessful.
+			return False;
+
+		}
 	}
 ?>

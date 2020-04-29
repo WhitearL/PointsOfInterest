@@ -69,7 +69,7 @@
 					// Take the CSV response line and split on the comma.
 					var responseLine = responseData.target.responseText;
 
-					// CSRF.php returns "INVALID_USER" if the gatekeeper var isnt set.
+					// CSRF.php redirects if the gatekeeper var isnt set.
 					if (responseLine != invalidUser) {
 						var responseArr = responseLine.split(",");
 

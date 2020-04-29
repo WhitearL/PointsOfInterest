@@ -21,17 +21,67 @@
 
                     <script type='text/javascript'>
 
-                        // Click handler to approve review
-                        function approveReview(reviewID) {
-                            console.log(reviewID);
-                            console.log("approve");
+                        /*
+                            Generate a CSRF token, then run the given sensitive operation using the opCode.
+                            The opCode indicates the operation to be run that needs a CSRF token.
+                        */
+                        function runSensitiveOperation(reviewID, opCode) {
+
+                            // Declare to access from callback
+                            var revID = reviewID;
+                            var operationCode = opCode; 
+
+                            // XML HTTP request object.
+                            var httpRequest = new XMLHttpRequest();
+
+                            var CSRFResponse = function csrfResponse(responseData) {
+                                // Take the CSV response line and split on the comma.
+                                var responseLine = responseData.target.responseText;
+
+                                // CSRF.php redirects if the gatekeeper var isnt set.
+                                var responseArr = responseLine.split(",");
+
+                                // Opcode is the first element, CSRF token is the second.
+                                var opCode = responseArr[0];
+                                var CSRFToken = responseArr[1];
+
+                                // Call appropriate function based on opcode.
+                                switch (opCode) {
+                                    case "APPROVE":
+                                        approveReview(revID, CSRFToken);
+                                        break;
+                                    case "DELETE":
+                                        deleteReview(revID, CSRFToken);
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                            }
+
+                            // Specify the callback function.
+                            httpRequest.addEventListener("load", CSRFResponse);
+
+                            httpRequest.open('POST', '../script/CSRF.php');
+
+                            // Append data to form object, and send using the HTTP Request.
+                            let formData = new FormData();
+                            formData.append("opCode", opCode);
+
+                            // Send the request.
+                            httpRequest.send(formData);
+
                         }
 
-                        function deleteReview(reviewID) {
+                        // Click handler to approve review
+                        function approveReview(reviewID, CSRF) {
                             console.log(reviewID);
-                            console.log("delete");
+                            console.log(CSRF);
+                        }
 
-                            removeElement(reviewID);
+                        function deleteReview(reviewID, CSRF) {
+                            console.log(reviewID);
+                            console.log(CSRF);
                         }
 
                         // Remove a div container of a specific review ID.
@@ -94,6 +144,9 @@
             // If the search return results.
             if ($executedStatement->rowCount() > 0) {
 
+                $approve = "APPROVE";
+                $delete = "DELETE";
+
                 // Loop through the results
                 while($row = $executedStatement->fetch(PDO::FETCH_ASSOC)) {
 
@@ -118,11 +171,13 @@
                             echo "<h2 class='large'>Review ID: " . $result['id'] . ", for " . $row['name'] . ", ". $row['region'] . "</h2>";
                             echo "<h3 class='large'>" . "User's comment: ". $result['review'] . "</h3>";
 
-                            // Approve and delete buttons
-                            echo "<button class='button small' type='button' onClick='approveReview(" . $result['id'] . ")'>Approve</button>";
-                            echo "<button class='button small' type='button' onClick='deleteReview(" . $result['id'] . ")'>Delete</button> <br/>";
+                            // Approve and delete buttons. Very finnicky string ops to get both params into the method call.
+                            ?>                       
+                                <button class='button small' type='button' onClick='runSensitiveOperation(<?php echo $result['id'] ?>, "APPROVE")'>Approve</button>
+                                <button class='button small' type='button' onClick='runSensitiveOperation(<?php echo $result['id'] ?>, "DELETE")'>Delete</button>
+                                <br/>
+                            <?php
                         echo "</div>";
-
                         echo "<br/>";
                     }
 
