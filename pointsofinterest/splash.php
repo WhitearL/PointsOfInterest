@@ -1,5 +1,9 @@
 <?php
 
+	// Include the POI DAO and utils
+	require_once("../class/DAO/POIDAO.php");
+	require_once("script/POICommonUtils.php");
+
 	// Include slim dependencies from server autoload
 	require('C:\xampp\php\vendor\autoload.php');
 	use Psr\Http\Message\ResponseInterface as Response;
@@ -14,26 +18,6 @@
 
 		?>
 
-		<!-- Slim setup -->
-		<?php
-
-			// Create slim app and set up middleware
-			$app = AppFactory::create();
-			$app->addRoutingMiddleware();
-			$app->addErrorMiddleware(true, true, true);
-
-			// Move base path to pointsofinterest dir.
-			$app->setBasePath('/pointsofinterest');
-
-			// Splash page route.
-			$app->get('/splashpage', function(Request $req, Response $res, array $args) {
-				return $res;
-			});
-
-			$app->run();
-
-		?>
-
 		<!-- Present page if session var is set. -->
 		<html>
 			<head>
@@ -41,8 +25,8 @@
 				<link rel="stylesheet" type="text/css" href="../style/style.css"/>
 
 				<!-- Import form creation scripts -->
-				<script src="../class/java/formhandlers/AddPOIFormHandler.js" type="text/javascript"></script>
 				<script src="../class/java/formhandlers/SearchPOIFormHandler.js" type="text/javascript"></script>
+				<script src="../class/java/formhandlers/AddPOIFormHandler.js" type="text/javascript"></script>
 			</head>
 
 			<script type='text/javascript'>
@@ -50,7 +34,6 @@
 				// Status code constants
 				const adminControls = "ADMIN_CONTROL";
 				const addPOIs       = "ADD_POI";
-				const removePOIs    = "REMOVE_POI";
 				const searchPOIs    = "SEARCH";
 				const logout        = "LOG_OUT";
 				const invalidUser   = "INVALID_USER";
@@ -104,9 +87,6 @@
 							case addPOIs:
 								add(CSRFToken);
 								break;
-							case removePOIs:
-								remove(CSRFToken);
-								break;
 							case searchPOIs:
 								search(CSRFToken);
 								break;
@@ -159,12 +139,8 @@
 
 						// Set event handler once form is appended -- Call the submit data function in the form handler.
 						document.getElementById("poiSubmit").addEventListener("click", function() { POIFormHandler.submitData(POIFormHandler.CSRF); });
-					}
-				}
 
-				// Form to remove a POI.
-				function remove(CSRFToken) {
-					document.getElementById('test').innerHTML = "remove";
+					}
 				}
 
 				// Form to search POIs
@@ -186,6 +162,9 @@
 
 						// Set event handler once form is appended -- Call the submit data function in the form handler.
 						document.getElementById("poiSearch").addEventListener("click", function() { POISearchFormHandler.submitData(POISearchFormHandler.CSRF); });
+
+						// Set event handler once form is appended -- Call the submit review function in the form handler.
+						document.getElementById("poiAddReview").addEventListener("click", function() { POISearchFormHandler.leaveReview(); });
 					}
 				}
 
@@ -212,7 +191,6 @@
 						<!-- Sidebar buttons, link to event handler with different params on click -->
 						<button class="button" type="button" onClick="sidebarHandler('ADMIN_CONTROL')">Admin Controls</button>
 						<button class="button" type="button" onClick="sidebarHandler('ADD_POI')">Add POIs</button>
-						<button class="button" type="button" onClick="sidebarHandler('REMOVE_POI')">Remove POIs</button>
 						<button class="button" type="button" onClick="sidebarHandler('SEARCH')">Search POIs</button>
 						<button class="button" type="button" onClick="sidebarHandler('LOG_OUT')">Log Out</button>
 

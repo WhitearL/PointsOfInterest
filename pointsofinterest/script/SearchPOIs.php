@@ -69,21 +69,4 @@
           echo "INVALID_USER";
      }
 
-     /*
-          Convert a POI object to an accociative array of field names to their values.
-               Parameter $data: Object to convert
-     */
-     function convertToArray($data) {
-          if (is_array($data) || is_object($data)) {
-               $result = array();
-
-               foreach($data as $key => $value) {
-                    $result[$key] = $this->convertToArray($value);
-               }
-
-               return $result;
-          }
-          return $data;
-     }
-
 ?>

@@ -1,7 +1,7 @@
 <?php
 
 	// Include the poi data entity
-	require_once("../../class/POI.php");
+	require_once __DIR__ . "/../../class/POI.php";
 
 	/*
 		Data Access Object for Point of Interest objects.
@@ -92,6 +92,23 @@
 			$statement = $this->dbConnection->prepare("SELECT * FROM pointsofinterest WHERE $searchField = ?");
 			// Execute the statement and return it.
 			$statement->execute([$searchValue]);
+
+			return $statement;
+
+		}
+
+		/*
+			Add a recommendation to a poi
+				Parameter poiID: ID of poi to recommend
+		*/
+		public function recommendPOI($poiID) {
+
+			$ID = trim(htmlentities($poiID));
+
+			// Increment recommended on id
+			$sql = "UPDATE pointsofinterest SET recommended=recommended + 1 WHERE ID=?";
+			$statement = $this->dbConnection->prepare($sql);
+			$statement->execute([$ID]);
 
 			return $statement;
 

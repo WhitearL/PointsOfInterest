@@ -32,13 +32,13 @@
 
 	   		// If statement was successfully prepared, then bind its params.
 			if ($statement = $this->dbConnection->prepare($sql)){
-				// Bind variables to the prepared statement as parameters
-				$statement->bindParam(":username", $userParam, PDO::PARAM_STR);
-				$statement->bindParam(":password", $passParam, PDO::PARAM_STR);
-
 				// Trim and set parameters for the prepared statement
 				$userParam = trim($inputUsername);
 				$passParam = trim($inputPassword);
+
+				// Bind variables to the prepared statement as parameters
+				$statement->bindParam(":username", $userParam, PDO::PARAM_STR);
+				$statement->bindParam(":password", $passParam, PDO::PARAM_STR);
 
 				// Execute query, with username and password as placeholders.
 				if ($statement->execute()) {

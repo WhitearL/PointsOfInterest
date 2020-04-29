@@ -1,6 +1,6 @@
 <?php
 
-     require_once("../../class/POI.php");
+     require_once __DIR__ . "/../../class/POI.php";
 
      /*
           Convert a POI object into a JSON string that JS can read.
