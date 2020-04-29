@@ -22,4 +22,6 @@
           echo "INVALID_USER";
      }
 
+     // Hello
+
 ?>
