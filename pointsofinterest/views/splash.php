@@ -1,20 +1,18 @@
 <?php
 
-	// Include the POI DAO and utils
-	require_once("../class/DAO/POIDAO.php");
-	require_once("script/POICommonUtils.php");
-
 	// Include slim dependencies from server autoload
 	require('C:\xampp\php\vendor\autoload.php');
 	use Psr\Http\Message\ResponseInterface as Response;
 	use Psr\Http\Message\ServerRequestInterface as Request;
 	use Slim\Factory\AppFactory;
 
-	// Start the session
-	session_start();
-
 	// Check the gatekeeper session variable
 	if (isset($_SESSION["gatekeeper"])) {
+
+		// Include the POI DAO and utils
+		require_once("../class/DAO/POIDAO.php");
+		require_once("script/POICommonUtils.php");
+
 
 		?>
 
@@ -55,7 +53,7 @@
 					httpRequest.open('POST', 'script/CSRF.php');
 
 					// Append data to form object, and send using the HTTP Request.
-			          let formData = new FormData();
+			        let formData = new FormData();
 					formData.append("opCode", opCode);
 
 					// Send the request.
@@ -113,11 +111,62 @@
 					}
 				}
 
-
 				// --- Operation-specific methods ---
 
 				function adminControl(CSRFToken) {
-					document.getElementById('test').innerHTML = "admincontrol";
+
+					// To access csrf in callback
+					var csrf = CSRFToken;
+
+					/**
+					 * Called when admin check response comes back.
+					 */
+					var adminRes = function adminResponse(responseData) {
+
+						var responseText = responseData.target.responseText;
+
+						if (responseText == "ADMIN_OK") {
+
+							// Create a form with a hidden field and include the csrf token in it.
+							var csrfForm = document.createElement('form');
+							csrfForm.action = "/pointsofinterest/admin/AdminControls.php";
+							csrfForm.method = "post";
+
+							// Set up form hidden input field
+							var csrfFormField = document.createElement('input');
+							csrfFormField.type = "hidden";
+							csrfFormField.name = "CSRF";
+							csrfFormField.value = csrf;
+
+							csrfForm.appendChild(csrfFormField);
+
+							// Forms dont work unless theyre appended to the body for whatever reason.
+							document.body.appendChild(csrfForm);
+
+							// Submit the form and go to the admin page.
+							csrfForm.submit();
+						} else if (responseText == "NON-ADMIN_USER") {
+							alert("You are not an admin, you cannot access this area.")
+						} else if (responseText == "BAD_CSRF" || responseText == "BAD_USER") {
+							window.location.replace("../../error_pages/gatekeeper.php");
+						}
+
+					}
+
+					// XML HTTP request object.
+					var httpRequest = new XMLHttpRequest();
+
+					// Specify the callback function.
+					httpRequest.addEventListener("load", adminRes);
+
+					httpRequest.open('POST', 'admin/AdminCheck.php');
+
+					// Append data to form object, and send using the HTTP Request.
+					let formData = new FormData();
+					formData.append("CSRF", CSRFToken);
+
+					// Send the request.
+					httpRequest.send(formData);
 				}
 
 				// Form to add a POI.
@@ -125,8 +174,8 @@
 					if (CSRFToken != null) {
 						var contentPane = document.getElementById("contentPaneInner");
 
-					     // Clear content pane by setting the content to empty text
-					     contentPane.textContent = '';
+						// Clear content pane by setting the content to empty text
+						contentPane.textContent = '';
 
 						// Generate a CSRF token and create a new add POI form using that token.
 						var POIFormHandler = new AddPOIFormHandler(CSRFToken);
@@ -163,8 +212,6 @@
 						// Set event handler once form is appended -- Call the submit data function in the form handler.
 						document.getElementById("poiSearch").addEventListener("click", function() { POISearchFormHandler.submitData(POISearchFormHandler.CSRF); });
 
-						// Set event handler once form is appended -- Call the submit review function in the form handler.
-						document.getElementById("poiAddReview").addEventListener("click", function() { POISearchFormHandler.leaveReview(); });
 					}
 				}
 
@@ -215,7 +262,7 @@
 		?>
 
 		<!-- Redirect to the gatekeeper page if session is invalid. -->
-		<script> window.location.replace("../error_pages/gatekeeper.php") </script>
+		<script> window.location.replace("../../error_pages/gatekeeper.php") </script>
 
 		<?php
 	}

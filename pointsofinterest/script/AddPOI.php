@@ -73,14 +73,23 @@
 
           } else {
 
-               // Invalid CSRF token
-               echo "INVALID_CSRF_TOKEN";
+               ?>
+                    <!-- Redirect to the gatekeeper page if session is invalid. -->
+                    <!-- A bad CSRF is an urgent cracking attempt, get the user out. -->
+                    <script> window.location.replace("../../error_pages/gatekeeper.php") </script>
+               <?php
 
           }
 
      } else {
-          // Invalid user detected.
-          echo "INVALID_USER";
+          // Bad username
+          ?>
+
+               <!-- Redirect to the gatekeeper page if session is invalid. -->
+               <!-- A bad gatekeeper var is an urgent cracking attempt, get the user out. -->
+               <script> window.location.replace("../../error_pages/gatekeeper.php") </script>
+
+          <?php
      }
 
 ?>

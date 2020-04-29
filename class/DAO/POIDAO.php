@@ -64,16 +64,25 @@
 		}
 
 		/*
-			Remove a POI from the database using a POI Data Entity parameter
-				Parameter $poi: POI Data Entity to be removed
+			Utlity method to get poi data by ID
 		*/
-		public function removePOI(POI $poi) {
+		public function getPOI($poiID) {
+			// PDOStatement->bindParam() only allows variables to be passed in by reference, so declare before binding.
+			// Parse using htmlentities to ensure no scripting can occur
+			$poiID = trim(htmlentities($poiID));
 
+			// Use search field value and field to search db
+			$statement = $this->dbConnection->prepare("SELECT * FROM pointsofinterest WHERE ID = ?");
+			
+			// Execute the statement and return it.
+			$statement->execute([$poiID]);
+
+			return $statement;
 		}
 
 		/*
 			Search the database for POIs using search field and value database
-				Parameter $searchField: Field of the database to search on e.g. Region
+				Parameter $poiID: Field of the database to search on e.g. Region
 				Parameter $searchValue: Value to be searched for using the given field e.g. Normandy
 		*/
 		public function searchPOIs($searchField, $searchValue) {
@@ -113,6 +122,94 @@
 			return $statement;
 
 		}
+		
+		/*
+			Add a review to a given poi
+		*/
+		public function reviewPOI($poiID, $reviewText) {
+			// Prepared statement
+			$sql = "INSERT INTO poi_reviews (poi_id, review, approved)
+			VALUES (:poiID, :reviewText, 0);";
 
+			// If statement was successfully prepared, then bind its params.
+			if ($statement = $this->dbConnection->prepare($sql)) {
+
+				// PDOStatement->bindParam() only allows variables to be passed in by reference, so declare before binding.
+				// Parse using htmlentities to ensure no scripting can occur
+				$poiID = trim(htmlentities($poiID));
+				$reviewText = trim(htmlentities($reviewText));
+
+				// Bind object properties to the prepared statement as parameters, trimming user input.
+				$statement->bindParam(":poiID", $poiID, PDO::PARAM_STR);
+				$statement->bindParam(":reviewText", $reviewText, PDO::PARAM_STR);
+
+				// Execute the statement and return the boolean result.
+				return $statement->execute();
+			} else {
+				return "FAILED";
+			}
+
+		}
+
+		/**
+		 * Get all approved reviews per poi.
+		 */
+		public function getApprovedReviews($poiID) {
+
+
+			// PDOStatement->bindParam() only allows variables to be passed in by reference, so declare before binding.
+			// Parse using htmlentities to ensure no scripting can occur
+			$poiID = trim(htmlentities($poiID));
+
+			// Use id to search db
+			$statement = $this->dbConnection->prepare("SELECT * FROM poi_reviews WHERE poi_id=? AND approved = 1;");
+			// Execute the statement and return it.
+			$statement->execute([$poiID]);	
+
+			return $statement;
+
+		}
+
+		/**
+		 * Get all unapproved reviews.
+		 */
+		public function getUnapprovedReviews() {
+
+			// Use id to search db
+			$statement = $this->dbConnection->prepare("SELECT * FROM poi_reviews WHERE approved = 0;");
+			// Execute the statement and return it.
+			$statement->execute();	
+
+			return $statement;
+
+		}
+
+		/**
+		 * Remove a review of a certain ID. Returns a success state boolean.
+		 */
+		public function removeReview($reviewID) {
+
+			// No scripting here
+			$revID = trim(htmlentities($reviewID));
+
+			// Use id to search db
+			$statement = $this->dbConnection->prepare("DELETE FROM poi_reviews WHERE id=?");
+			// Execute the statement and return it.
+			$statement->execute([$revID]);	
+
+			if ($statement->rowCount() > 0) {
+				// One row was deleted. Successful
+				return True;
+			}
+
+			// Nothing was deleted. Unsuccessful.
+			return False;
+
+		}
+
+		/**
+		 * Approve a review of a certain ID. Returns a success state boolean.
+		 * 
+		 */
 	}
 ?>

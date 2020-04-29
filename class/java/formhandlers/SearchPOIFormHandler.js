@@ -106,14 +106,6 @@ class SearchPOIFormHandler {
           this.submitElement.setAttribute("class", "button");
           this.submitElement.setAttribute("type", "button");
 
-          // Add review button
-          this.addReviewElement = document.createElement('button');
-          this.addReviewElement.id = "poiAddReview";
-          this.addReviewElement.innerHTML = "Add review";
-          // Button styling and type
-          this.addReviewElement.setAttribute("class", "button");
-          this.addReviewElement.setAttribute("type", "button");
-
           // Output message box under search button
           this.searchResponseOutput = document.createElement('p');
           this.searchResponseOutput.id = "searchResponseOutput";
@@ -146,7 +138,6 @@ class SearchPOIFormHandler {
 
           // Review box
           container.appendChild(this.createReviewBox());
-          container.appendChild(this.addReviewElement);
 
           // Append message box
           container.appendChild(this.searchResponseOutput);
@@ -167,25 +158,6 @@ class SearchPOIFormHandler {
 
           // Table body element
           var tableBody = document.createElement('tbody');
-
-
-          var trPOIIDBox = document.createElement('tr');
-
-               // ID label.
-               var thLblPOIIDBox = document.createElement('th');
-               var lblID = document.createElement('label');
-               lblID.innerHTML = "POI ID";
-               thLblPOIIDBox.appendChild(lblID);
-               trPOIIDBox.appendChild(thLblPOIIDBox);
-
-               // Search field combobox.
-               var thInputIDBox = document.createElement('th');
-               var inputID = document.createElement('input');
-               inputID.id = "poiID";
-               thInputIDBox.appendChild(inputID);
-               trPOIIDBox.appendChild(thInputIDBox);
-
-          tableBody.appendChild(trPOIIDBox);
 
           // Search value combobox row. Allows user to enter value to search on.
           var trPOIReview = document.createElement('tr');
@@ -257,20 +229,46 @@ class SearchPOIFormHandler {
      }
 
      // Sumbmit review for a specific POI.
-     leaveReview() {
-          console.log("leave review test");
+     leaveReview(poiID) {
 
           // Needed values
-          console.log(document.getElementById('poiID').value);
-          console.log(document.getElementById('textAreaReview').value);
+          var reviewText = document.getElementById('textAreaReview').value;
 
-          // Need to link to slim route.
-     }
+          var leaveReviewResponse = function reviewResponse(responseData) {
 
-     // Link to another page with reviews for that POI
-     viewReviews(poiID) {
-          console.log(poiID);
-          console.log("view review test" + poiID);
+               var responseText = responseData.target.responseText;
+
+               if (responseText == "SUCCESS") {
+                    alert("Review submitted! Your review will be posted when an admin approves it.");
+               } else if (responseText == "EMPTY_DETAILS") {
+                    alert("Either that POI is not valid or the review box is empty.")
+               } else if (responseText == "BAD_GATEKEEPER") {
+                    window.location.replace("../../../error_pages/gatekeeper.php")
+               } else if (responseText == "BAD_CSRF") {
+                    window.location.replace("../../../error_pages/gatekeeper.php")
+               } else {
+                    alert(responseData.target.responseText);
+               }
+
+          }
+
+          // XML HTTP request object.
+          var httpRequest = new XMLHttpRequest();
+
+          // Specify the callback function.
+          httpRequest.addEventListener("load", leaveReviewResponse);
+
+          httpRequest.open('POST', '../pointsofinterest/review/' + poiID);
+
+          // Append data to form object, and send using the HTTP Request.
+          let formData = new FormData();
+          formData.append("poiID", poiID);
+          formData.append("reviewText", reviewText);
+          formData.append("CSRF", this.CSRF);
+
+          // Send the request.
+          httpRequest.send(formData);
+
      }
 
      recommend(poiID) {
@@ -328,20 +326,19 @@ class SearchPOIFormHandler {
 
                // Read the response, and get the json thats in the header. It is marked in between JSON_START and JSON_END
                var res = responseData.target.responseText;
-               var jsonText = res.substring(res.lastIndexOf("JSON_START") + 10, res.lastIndexOf("JSON_END"));
 
-               //document.getElementById("searchResponseOutput").innerHTML = responseData.target.responseText;
-               this.POIJSONArr = jsonText.split("BREAK");
+               this.jsonData = JSON.parse(res);
 
                // Search results table root element
                var rootTable = document.createElement('table');
                // Table body element
                var rootTableBody = document.createElement('tbody');
 
-                    // Parse POI JSON into dynamic object.
-                    for (let i = 0; i < this.POIJSONArr.length; i++) {
-                         if (this.POIJSONArr[i].length > 0) {
-                              var POI = JSON.parse(this.POIJSONArr[i]);
+                    if (this.jsonData.length > 0) {
+                         // Parse POI JSON into dynamic object.
+                         for (let i = 0; i < this.jsonData.length; i++) {
+                         
+                              var POI = this.jsonData[i];
 
                               // Row to display all details of a POI. Inside is another table with the rows showing the details.
                               var rootTableRow = document.createElement('tr');
@@ -395,7 +392,7 @@ class SearchPOIFormHandler {
                                    var trCoords = document.createElement('tr');
                                         var thCoords = document.createElement("th");
                                         var pCoords = document.createElement("h3");
-                                        pCoords.innerHTML = "Coords: " + POI.latitude + ", " + POI.longitude;
+                                        pCoords.innerHTML = "Coords: " + POI.lat + ", " + POI.lon;
                                         thCoords.appendChild(pCoords);
                                         trCoords.appendChild(thCoords);
                                    rowTableBody.appendChild(trCoords);
@@ -418,7 +415,7 @@ class SearchPOIFormHandler {
                                         var aRecommend = document.createElement('a');
                                         aRecommend.className = "poiLink";
                                         aRecommend.innerHTML = "Recommend";
-                                        aRecommend.addEventListener("click", function() { classContextThis.recommend(JSON.parse(callbackContextThis.POIJSONArr[i]).ID); } );
+                                        aRecommend.addEventListener("click", function() { classContextThis.recommend(callbackContextThis.jsonData[i].ID); } );
                                         thRecommend.appendChild(aRecommend);
                                         trLinks.appendChild(thRecommend);
 
@@ -427,7 +424,7 @@ class SearchPOIFormHandler {
                                         var aLeaveReview = document.createElement('a');
                                         aLeaveReview.className = "poiLink";
                                         aLeaveReview.innerHTML = "Leave Review";
-                                        aLeaveReview.addEventListener("click", function() { classContextThis.leaveReview(JSON.parse(callbackContextThis.POIJSONArr[i]).ID); });
+                                        aLeaveReview.addEventListener("click", function() { classContextThis.leaveReview(callbackContextThis.jsonData[i].ID); });
                                         thRecommend.appendChild(aLeaveReview);
                                         trLinks.appendChild(thLeaveReview);
 
@@ -436,7 +433,7 @@ class SearchPOIFormHandler {
                                         var aViewReviews = document.createElement('a');
                                         aViewReviews.className = "poiLink";
                                         aViewReviews.innerHTML = "View Reviews";
-                                        aViewReviews.addEventListener("click", function() { classContextThis.viewReviews(JSON.parse(callbackContextThis.POIJSONArr[i]).ID); });
+                                        aViewReviews.href = "../../../pointsofinterest/script/ViewReviewsPerPOI.php?ID=" + callbackContextThis.jsonData[i].ID;
                                         thRecommend.appendChild(aViewReviews);
                                         trLinks.appendChild(thViewReviews);
 

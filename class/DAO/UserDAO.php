@@ -33,8 +33,8 @@
 	   		// If statement was successfully prepared, then bind its params.
 			if ($statement = $this->dbConnection->prepare($sql)){
 				// Trim and set parameters for the prepared statement
-				$userParam = trim($inputUsername);
-				$passParam = trim($inputPassword);
+				$userParam = trim(htmlentities($inputUsername));
+				$passParam = trim(htmlentities($inputPassword));
 
 				// Bind variables to the prepared statement as parameters
 				$statement->bindParam(":username", $userParam, PDO::PARAM_STR);
@@ -54,6 +54,39 @@
 				// 0 or multiple matches, deny access.
 				return False;
 			}
+		}
+
+		// Check if a username is associated with admin priviledge
+		// Return true if user if admin, vice versa
+		public function isUserAdmin($username) {
+			// Prepare check statement with given user.
+			$sql = "SELECT isadmin FROM poi_users WHERE username = :username";
+
+			// If statement was successfully prepared, then bind its param.
+			if ($statement = $this->dbConnection->prepare($sql)){
+				// Trim and set parameter for the prepared statement
+				$userParam = trim(htmlentities($username));
+
+				// Bind variable to the prepared statement as parameter
+				$statement->bindParam(":username", $userParam, PDO::PARAM_STR);
+
+				// Execute query, with username  placeholder.
+				if ($statement->execute()) {
+
+					if ($statement->rowCount() > 0) {
+
+						$row = $statement->fetch(PDO::FETCH_ASSOC);
+						$isadmin = $row['isadmin'];
+
+						return $isadmin;
+
+					}
+				} 
+
+			}
+
+			// Unsuccessful, deny access.
+			return False;
 		}
 	}
 ?>
