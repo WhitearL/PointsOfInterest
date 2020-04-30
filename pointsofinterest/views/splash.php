@@ -11,8 +11,6 @@
 
 		// Include the POI DAO and utils
 		require_once("../class/DAO/POIDAO.php");
-		require_once("script/POICommonUtils.php");
-
 
 		?>
 

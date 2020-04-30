@@ -18,6 +18,7 @@
 
          // Public constructor, allow instantiation
          function __construct(
+               // Input params
                $name,
                $type,
                $country,

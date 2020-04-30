@@ -1,8 +1,9 @@
 <html>
     <!--This is the page the user will come to if they try to access a page directly, without gatekeeper being set-->
+	<!--This page is also used in the event of bad CSRF tokens. -->
 
 	<head>
-		<title>Invalid login credentials</title>
+		<title>POI: Access Denied</title>
 		<link rel="stylesheet" type="text/css" href="../style/style.css"/>
 	</head>
 

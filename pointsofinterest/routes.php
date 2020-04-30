@@ -1,5 +1,6 @@
 <?php
 
+     // Include the POIDAO for db queries.
 	require_once("../class/DAO/POIDAO.php");
 
 	// Include the user DAO for logon checks.
@@ -26,9 +27,16 @@
 
      // Splash page route.
      $app->get('/splashpage', function(Request $req, Response $res, array $args) use($view) {
-          
-          $res = $view->render($res, 'splash.php');    
-          return $res;
+          // Gatekeeper check
+          if (isset($_SESSION["gatekeeper"])) {
+               $res = $view->render($res, 'splash.php');    
+               return $res;
+          } else {
+               // Gatekeeper
+               $res->getBody()->write("You cannot access the site this way.");
+               $res->getBody()->write("<a href='../../../index.php'><p>Back to login page<p></a>");
+               return $res;
+          }
      });
 
      // Route to generate search result JSON. Returns raw json to javascript which uses it for display and functions.
@@ -48,11 +56,13 @@
                     // Create a new DAO to access the database.
                     $poiDAO = new POIDAO($dbConnection);
 
+                    // Run the query and get the results.
                     $executedStatement = $poiDAO->searchPOIs($args['field'], $args['value']);
 
                     // If the search return results.
                     if ($executedStatement->rowCount() > 0) {
 
+                         // Fetch all results, and parse them as an array of JSON objects.
                          $results = $executedStatement->fetchAll(PDO::FETCH_ASSOC);
                          return $res->withJson($results);
 
@@ -68,13 +78,23 @@
                     $res->getBody()->write($e);
                     return $res;
                }
+          } else {
+               // Gatekeeper
+               $res->getBody()->write("You cannot access the site this way.");
+               $res->getBody()->write("<a href='../../../index.php'><p>Back to login page<p></a>");
+               return $res;
           }
 
           return $res;
      });
 
+     // Route to review an id.
      $app->post('/review/{id}', function(Request $req, Response $res, array $args) {     
 
+          // If the user tried to get into this route without authorisation, 
+          // it would throw a '405 method not allowed' error anyway, because they probably wont be using POST from their browser.
+
+          // In case the user attempts to forge a POST request, the gatekeeper and csrf checks are still here.
           if (isset($_SESSION["gatekeeper"]) && isset($_SESSION["CSRF"])) {
 
                $post = $req->getParsedBody();
@@ -98,14 +118,16 @@
                               // If the search return results.
                               if ($successState) {
 
+                                   // Status code handled by JS
                                    $res->getBody()->write("SUCCESS");
 
                               } else {
-
+                                   // Status code handled by JS
                                    $res->getBody()->write("FAILURE");
 
                               }
                          } else {
+                              // Status code handled by JS
                               $res->getBody()->write("EMPTY_DETAILS");
                          }
                     } catch (PDOException $e) {
@@ -116,19 +138,21 @@
 
                     return $res;
                } else {
-                    $res->getBody()->write("BAD_CSRF");
+                    // Bad csrf
+                    $res->getBody()->write("You have an invalid auth token.");
+                    $res->getBody()->write("<a href='../../../index.php'><p>Back to login page<p></a>");
                     return $res;
                } 
           } else {
-               $res->getBody()->write("BAD_GATEKEEPER");
+               // Bad gatekeeper
+               $res->getBody()->write("You cannot access the site this way.");
+               $res->getBody()->write("<a href='../../../index.php'><p>Back to login page<p></a>");
                return $res;
           }
 
      });
 
-    // Security check for admin access
-
-     // Add review route.
+     // Run the slim app to create the routes.
      $app->run();
 
 ?>

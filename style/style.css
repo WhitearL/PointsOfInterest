@@ -26,19 +26,23 @@ h2, h3 {
 h2 { font-size: 18px; }
 h3 { font-size: 12px; }
 
+/* Large h2 tag */
 h2.large {
 	font-size:28px;
 }
 
+/* Large h3 tag */
 h3.large {
 	font-size:18px;
 }
 
+/*Smaller button for review page*/
 button.small {
 	width: 10%;
 	height: 5%
 }
 
+/*Cut space between table cells*/
 table.nospace {
 	border-spacing: 0;
 	border-collapse: collapse;
@@ -62,6 +66,7 @@ div.topbar {
 	top: auto;
 }
 
+/*Specific CSS IDs for the search results and search form boxes.*/
 #searchResultsContainer, #searchFormContainer {
 	/*Mint green*/
 	background-color: #C6F1E7;
@@ -85,6 +90,7 @@ div.topbar {
 	text-align: center;
 }
 
+/*Align table text to the left*/
 th {
 	text-align:left;
 }
@@ -116,6 +122,7 @@ div.center {
 
 }
 
+/*Self-resizing form that sticks to its parent, also has padding for looks*/
 div.dynamicform {
 	/*Mint green*/
 	background-color: #D6F5EE;
@@ -146,6 +153,7 @@ div.bordered {
 
 }
 
+/*Coloured in div.*/
 div.filled {
 	/*Darker Mint green*/
 	background-color: #C6F1E7;
@@ -245,7 +253,7 @@ p.successmessage {
 	margin: 0;
 }
 
-/*Button standard styling*/
+/*Button standard styling. Darkens when hovered, and even more when clicked.*/
 .button {
 	transition: all 0.25s;
 	width: 100%;
@@ -264,6 +272,7 @@ p.successmessage {
 	background-color: #239076;
 }
 
+/*Color for button when clicked.*/
 .button:active {
 	background-color: #0f3E33;
 }

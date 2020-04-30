@@ -22,17 +22,17 @@
                 // Create a new DAO to access the database.
                 $poiDAO = new POIDAO($dbConnection);
 
-                $approvedState = $poiDAO->approveReview($revID);
+                $approvedState = $poiDAO->removeReview($revID);
     
                 if ($approvedState) {
                     echo "SUCCESS";
                 } else {
                     echo "FAILURE";
-                }
+                }  
             } else {
                 echo "NON-ADMIN";
             }
-
+            
         } else {
             ?>
                 <!-- Redirect to the gatekeeper page if session is invalid. -->

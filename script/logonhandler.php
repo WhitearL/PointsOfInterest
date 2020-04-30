@@ -22,8 +22,8 @@
 	define("BAD_CREDENTIAL_FORMAT", "BAD_CREDENTIAL_FORMAT");
 
 	/*Get params from query string, encoding using htmlentities*/
-	$inputUsername = htmlentities($_POST["username"]);
-	$inputPassword = htmlentities($_POST["password"]);
+	$inputUsername = trim(htmlentities($_POST["username"]));
+	$inputPassword = trim(htmlentities($_POST["password"]));
 
 	/*
 	  Attempt to match the username and password to their regexes defined above

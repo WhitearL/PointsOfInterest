@@ -327,6 +327,11 @@ class SearchPOIFormHandler {
                // Read the response, and get the json thats in the header. It is marked in between JSON_START and JSON_END
                var res = responseData.target.responseText;
 
+               // Catch a bad username
+               if (res == 'BAD_GATEKEEPER') {
+                    window.location.replace("../../../error_pages/gatekeeper.php");
+               }
+
                this.jsonData = JSON.parse(res);
 
                // Search results table root element

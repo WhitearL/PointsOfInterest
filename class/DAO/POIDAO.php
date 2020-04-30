@@ -156,7 +156,6 @@
 		 */
 		public function getApprovedReviews($poiID) {
 
-
 			// PDOStatement->bindParam() only allows variables to be passed in by reference, so declare before binding.
 			// Parse using htmlentities to ensure no scripting can occur
 			$poiID = trim(htmlentities($poiID));

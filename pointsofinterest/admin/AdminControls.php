@@ -75,13 +75,82 @@
 
                         // Click handler to approve review
                         function approveReview(reviewID, CSRF) {
-                            console.log(reviewID);
-                            console.log(CSRF);
+
+                            // Access the review ID from the callback
+                            var revID = reviewID;
+
+                            // XML HTTP request object.
+                            var httpRequest = new XMLHttpRequest();
+
+                            var approveResponse = function approveResponseCallback(responseData) {
+
+                                responseText = responseData.target.responseText;
+
+                                if (responseText == "SUCCESS") {
+                                    alert("You have approved review " + revID + "!");
+
+                                    removeElement(revID);
+                                } else if (resonseText == "NON-ADMIN") {
+                                    alert("You cannot access this area, you must be an admin");
+                                } else {
+                                    alert(responseText);
+                                }
+
+                            }
+
+                            // Specify the callback function.
+                            httpRequest.addEventListener("load", approveResponse);
+
+                            httpRequest.open('POST', 'Approve.php');
+
+                            // Append data to form object, and send using the HTTP Request.
+                            let formData = new FormData();
+                            formData.append("revID", reviewID);
+                            formData.append("admin", "True");
+                            formData.append("CSRF", CSRF);
+
+                            // Send the request.
+                            httpRequest.send(formData);
+
                         }
 
                         function deleteReview(reviewID, CSRF) {
-                            console.log(reviewID);
-                            console.log(CSRF);
+                            
+                            // Access the review ID from the callback
+                            var revID = reviewID;
+
+                            // XML HTTP request object.
+                            var httpRequest = new XMLHttpRequest();
+
+                            var deleteResponse = function deleteResponseCallback(responseData) {
+
+                                responseText = responseData.target.responseText;
+
+                                if (responseText == "SUCCESS") {
+                                    alert("You have deleted review " + revID + "!");
+
+                                    removeElement(revID);
+                                } else if (resonseText == "NON-ADMIN") {
+                                    alert("You cannot access this area, you must be an admin");
+                                } else {
+                                    alert(responseText);
+                                }
+
+                            }
+
+                            // Specify the callback function.
+                            httpRequest.addEventListener("load", deleteResponse);
+
+                            httpRequest.open('POST', 'Delete.php');
+
+                            // Append data to form object, and send using the HTTP Request.
+                            let formData = new FormData();
+                            formData.append("revID", reviewID);
+                            formData.append("admin", "True");
+                            formData.append("CSRF", CSRF);
+
+                            // Send the request.
+                            httpRequest.send(formData);
                         }
 
                         // Remove a div container of a specific review ID.
@@ -144,9 +213,6 @@
             // If the search return results.
             if ($executedStatement->rowCount() > 0) {
 
-                $approve = "APPROVE";
-                $delete = "DELETE";
-
                 // Loop through the results
                 while($row = $executedStatement->fetch(PDO::FETCH_ASSOC)) {
 
@@ -163,7 +229,6 @@
                         // Create a unique div per review, that JS can use to remove the divs when the reviews are deleted or approved.
                         $stringID = strval($result['id']);
                         $specificContainerID = "'container" . $stringID . "'";
-                        echo $specificContainerID;
 
                         // Give the div the specific ID, so it can be removed later if necessary.
                         echo "<div id=" . $specificContainerID . ">";
@@ -185,14 +250,14 @@
 
             } else {
 
-                 // No results
-                 echo "NO_RESULTS";
+                // No results
+                echo "<h2>There are no reviews to be approved.</h1>";
 
             }
-       } catch (PDOException $e) {
+        } catch (PDOException $e) {
             // General error reporting
             echo $e;
-       }
+        }
     }
 
 ?>
